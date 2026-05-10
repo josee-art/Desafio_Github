@@ -8,10 +8,11 @@ def Cadastro():
     print("\n====Cadastro de Pacientes====\n")
     nome = str(input("Digite o nome do paciente: "))
     peso = float(input("Digite o peso do paciente (Kg): "))
+    altura = float(input("Digite a altura do paciente: "))
     if peso <= 0:
         print("\nDigite um peso válido!")
     else:
-        return print(f"\nO nome do paciente é {nome} e seu peso é igual a {peso} Kg\n")
+        return print(f"\nO nome do paciente é {nome}, seu peso é igual a {peso} Kg e sua altura é igual a {altura}\n")
 
 if opcao == 1:
     Cadastro()
