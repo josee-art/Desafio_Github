@@ -8,7 +8,6 @@ CAMINHO_HISTORICO = os.path.join(DIRETORIO_ATUAL,"historico_imc.txt")
 
 def Menu():
     print("\n===== CALCULADORA DE IMC =====\n")
-
     print("1 - Cadastrar paciente")
     print("2 - Mostrar pacientes")
     print("3 - Salvar dados")
@@ -21,10 +20,8 @@ def Menu():
     try:
         opcao = int(input("Digite a opção desejada: "))
         return opcao
-
     except ValueError:
         return 0
-
 
 def Carregar_Dados():
     if not os.path.exists(CAMINHO_ARQUIVO):
@@ -53,7 +50,6 @@ def Carregar_Dados():
 
 def Calculo_IMC(peso, altura):
     return peso / (altura ** 2)
-
 
 def Classificacao_IMC(imc):
     if imc < 18.5:
@@ -85,57 +81,8 @@ def Salvar_Historico(paciente):
 
         arquivo.write(linha)
 
-def Cadastro():
-    while True:
-
-        print("\n===== CADASTRO DE PACIENTE =====\n")
-
-        nome = input("Digite o nome do paciente: ")
-
-        try:
-
-            peso = float(input("Digite o peso (Kg): "))
-
-            altura = float(input("Digite a altura (m): "))
-
-        except ValueError:
-
-            print("\nDigite apenas números!")
-            continue
-
-        if peso <= 0 or altura <= 0:
-
-            print("\nPeso e altura devem ser maiores que zero!")
-            continue
-
-        paciente = {
-            "nome": nome,
-            "peso": peso,
-            "altura": altura
-        }
-
-        pacientes.append(paciente) 
-        Salvar_Historico(paciente) 
-        print("\nPaciente cadastrado com sucesso!")
-
-        opcao = input(
-            "\nDigite 1 para cadastrar outro paciente "
-            "ou qualquer tecla para voltar ao menu: "
-        )
-
-        if opcao == "1":
-
-            continue
-
-        else:
-
-            return
-
-def Mostrar_pacientes():
-    print("\n===== PACIENTES CADASTRADOS =====\n")
-
+def listar_pacientes():
     if len(pacientes) == 0:
-
         print("Nenhum paciente cadastrado.")
         return
 
@@ -156,6 +103,48 @@ def Mostrar_pacientes():
         print("==================================")
 
         indice += 1
+
+
+def Cadastro():
+    while True:
+
+        print("\n===== CADASTRO DE PACIENTE =====\n")
+
+        nome = input("Digite o nome do paciente: ")
+
+        try:
+            peso = float(input("Digite o peso (Kg): "))
+            altura = float(input("Digite a altura (m): "))
+        except ValueError:
+            print("\nDigite apenas números!")
+            continue
+
+        if peso <= 0 or altura <= 0:
+            print("\nPeso e altura devem ser maiores que zero!")
+            continue
+
+        paciente = {
+            "nome": nome,
+            "peso": peso,
+            "altura": altura
+        }
+
+        pacientes.append(paciente) 
+        Salvar_Historico(paciente) 
+        print("\nPaciente cadastrado com sucesso!")
+
+        opcao = input("\nDigite 1 para cadastrar outro paciente ou qualquer tecla para voltar ao menu: ")
+
+        if opcao == "1":
+            continue
+
+        else:
+            return
+
+def Mostrar_pacientes():
+    print("\n===== PACIENTES CADASTRADOS =====\n")
+
+    listar_pacientes()
 
     input("Digite qualquer valor para voltar ao menu: ")
 
@@ -187,49 +176,19 @@ def Salvar_Dados():
     print(f"\n[SUCESSO] Dados salvos em {CAMINHO_ARQUIVO}")
 
 def Apagar_paciente():
-    if len(pacientes) == 0:
-
-        print("Nenhum paciente cadastrado.")
-        return
-
-    indice = 1
-
-    for paciente in pacientes:
-
-        imc = Calculo_IMC(paciente["peso"],paciente["altura"])
-
-        classificacao = Classificacao_IMC(imc)
-
-        print(f"Paciente {indice}")
-        print(f"Nome: {paciente['nome']}")
-        print(f"Peso: {paciente['peso']} Kg")
-        print(f"Altura: {paciente['altura']} m")
-        print(f"IMC: {imc:.2f}")
-        print(f"Classificação: {classificacao}")
-        print("==================================")
-
-        indice += 1
+    listar_pacientes()
 
     try:
-
-        indice = int(
-            input(
-                "\nDigite o número do paciente que deseja apagar: "
-            )
-        )
+        indice = int(input("\nDigite o número do paciente que deseja apagar: "))
 
         if 1 <= indice <= len(pacientes):
-
             removido = pacientes.pop(indice - 1)
+
             Salvar_Dados()
 
-            print(
-                f"\nPaciente "
-                f"{removido['nome']} removido com sucesso!"
-            )
+            print(f"\nPaciente "f"{removido['nome']} removido com sucesso!")
 
         else:
-
             print("\nNúmero inválido!")
 
     except ValueError:
@@ -240,41 +199,28 @@ def Atualizar_Peso():
     print("\n===== ATUALIZAR PESO =====\n")
 
     if len(pacientes) == 0:
-
         print("Nenhum paciente cadastrado!")
         return
 
     print("Pacientes cadastrados:\n")
 
     for paciente in pacientes:
-
         print(f"- {paciente['nome']}")
 
     try:
-
-        nome_busca = input(
-            "\nDigite o nome do paciente: "
-        ).strip().lower()
+        nome_busca = input("\nDigite o nome do paciente: ").strip().lower()
 
         encontrado = False
 
         for paciente in pacientes:
-
             if paciente["nome"].lower() == nome_busca:
-
                 encontrado = True
 
-                print(
-                    f"\nPaciente selecionado: "
-                    f"{paciente['nome']}"
-                )
+                print(f"\nPaciente selecionado: "f"{paciente['nome']}")
 
-                novo_peso = float(
-                    input("Digite o novo peso (Kg): ")
-                )
+                novo_peso = float(input("Digite o novo peso (Kg): "))
 
                 if novo_peso <= 0:
-
                     print("\nPeso inválido!")
                     return
 
@@ -332,12 +278,9 @@ def Historico_Paciente():
 
         print(f"- {paciente['nome']}")
 
-    nome_busca = input(
-        "\nDigite o nome do paciente: "
-    ).strip().lower()
+    nome_busca = input("\nDigite o nome do paciente: ").strip().lower()
 
     if not os.path.exists(CAMINHO_HISTORICO):
-
         print("\nNenhum histórico encontrado!")
         return
 
@@ -348,14 +291,13 @@ def Historico_Paciente():
         for linha in arquivo:
 
             if linha.lower().startswith(nome_busca):
-
                 print(linha.strip())
 
                 encontrado = True
 
     if not encontrado:
-
         print("\nNenhum histórico encontrado para esse paciente.")
+
     opcao = input("Digite qualuqer valor para voltar ao menu: ")
 
 Carregar_Dados()
