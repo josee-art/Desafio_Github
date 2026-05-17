@@ -13,8 +13,10 @@ def Menu():
     print("2 - Mostrar pacientes")
     print("3 - Salvar dados")
     print("4 - Apagar paciente")
-    print("5 - Ver histórico")
-    print("6 - Sair\n")
+    print("5 - Atualizar peso do paciente")
+    print("6 - Ver histórico completo")
+    print("7 - Ver histórico do paciente")
+    print("8 - Sair\n")
 
     try:
         opcao = int(input("Digite a opção desejada: "))
@@ -112,8 +114,8 @@ def Cadastro():
             "altura": altura
         }
 
-        pacientes.append(paciente)
-
+        pacientes.append(paciente) 
+        Salvar_Historico(paciente) 
         print("\nPaciente cadastrado com sucesso!")
 
         opcao = input(
@@ -182,12 +184,6 @@ def Salvar_Dados():
 
             arquivo.write(linha)
 
-    with open(CAMINHO_HISTORICO, "a", encoding="utf-8") as arquivo:
-
-        for paciente in pacientes:
-
-            Salvar_Historico(paciente)
-
     print(f"\n[SUCESSO] Dados salvos em {CAMINHO_ARQUIVO}")
 
 def Apagar_paciente():
@@ -240,6 +236,66 @@ def Apagar_paciente():
 
         print("\nDigite um número válido!")
 
+def Atualizar_Peso():
+    print("\n===== ATUALIZAR PESO =====\n")
+
+    if len(pacientes) == 0:
+
+        print("Nenhum paciente cadastrado!")
+        return
+
+    print("Pacientes cadastrados:\n")
+
+    for paciente in pacientes:
+
+        print(f"- {paciente['nome']}")
+
+    try:
+
+        nome_busca = input(
+            "\nDigite o nome do paciente: "
+        ).strip().lower()
+
+        encontrado = False
+
+        for paciente in pacientes:
+
+            if paciente["nome"].lower() == nome_busca:
+
+                encontrado = True
+
+                print(
+                    f"\nPaciente selecionado: "
+                    f"{paciente['nome']}"
+                )
+
+                novo_peso = float(
+                    input("Digite o novo peso (Kg): ")
+                )
+
+                if novo_peso <= 0:
+
+                    print("\nPeso inválido!")
+                    return
+
+                paciente["peso"] = novo_peso
+
+                Salvar_Historico(paciente)
+
+                Salvar_Dados()
+
+                print("\nPeso atualizado com sucesso!")
+
+                return
+
+        if not encontrado:
+
+            print("\nPaciente não encontrado!")
+
+    except ValueError:
+
+        print("\nDigite um valor válido!")
+
 def Mostrar_Historico():
     print("\n===== HISTÓRICO GERAL =====\n")
 
@@ -260,6 +316,47 @@ def Mostrar_Historico():
         for linha in linhas:
 
             print(linha.strip())
+    opcao = input("Digite qualuqer valor para voltar ao menu: ")
+
+def Historico_Paciente():
+    print("\n===== HISTÓRICO DO PACIENTE =====\n")
+
+    if len(pacientes) == 0:
+
+        print("Nenhum paciente cadastrado!")
+        return
+
+    print("Pacientes cadastrados:\n")
+
+    for paciente in pacientes:
+
+        print(f"- {paciente['nome']}")
+
+    nome_busca = input(
+        "\nDigite o nome do paciente: "
+    ).strip().lower()
+
+    if not os.path.exists(CAMINHO_HISTORICO):
+
+        print("\nNenhum histórico encontrado!")
+        return
+
+    encontrado = False
+
+    with open(CAMINHO_HISTORICO, "r", encoding="utf-8") as arquivo:
+
+        for linha in arquivo:
+
+            if linha.lower().startswith(nome_busca):
+
+                print(linha.strip())
+
+                encontrado = True
+
+    if not encontrado:
+
+        print("\nNenhum histórico encontrado para esse paciente.")
+    opcao = input("Digite qualuqer valor para voltar ao menu: ")
 
 Carregar_Dados()
 
@@ -279,9 +376,15 @@ while True:
         Apagar_paciente()
 
     elif opcao == 5:
-        Mostrar_Historico()
+        Atualizar_Peso()
 
     elif opcao == 6:
+        Mostrar_Historico()
+
+    elif opcao == 7:
+        Historico_Paciente()
+
+    elif opcao == 8:
         print("\nEncerrando sistema...")
         break
 
