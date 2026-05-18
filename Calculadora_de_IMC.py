@@ -26,7 +26,7 @@ def Menu():
 def Carregar_Dados():
     if not os.path.exists(CAMINHO_ARQUIVO):
         return
-
+    
     with open(CAMINHO_ARQUIVO, "r", encoding="utf-8") as arquivo:
 
         linhas = arquivo.readlines()
